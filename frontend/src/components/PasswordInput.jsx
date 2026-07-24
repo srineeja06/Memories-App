@@ -1,0 +1,34 @@
+import React, { useState } from "react";
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
+
+const PasswordInput = ({ value, onChange, placeholder }) => {
+  const [isShowPassword, setIsShowPassword] = useState(false);
+
+  return (
+    <div className="flex items-center bg-cyan-600/5 px-5 rounded-sm mb-3">
+      <input
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder || "Enter Password"}
+        className="w-full text-sm bg-transparent py-3 rounded-sm outline-none"
+        type={isShowPassword ? "text" : "password"}
+      />
+
+      {isShowPassword ? (
+        <VscEye
+          size={22}
+          className="text-blue-500 cursor-pointer"
+          onClick={() => setIsShowPassword(false)}
+        />
+      ) : (
+        <VscEyeClosed
+          size={22}
+          className="text-slate-500 cursor-pointer"
+          onClick={() => setIsShowPassword(true)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default PasswordInput;
