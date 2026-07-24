@@ -95,7 +95,7 @@ const Login = () => {
 
             {loading ? 
               (
-                <span className='animate-pulse'>Loading.....</span>
+                <p className='animate-pulse w-full text-center btn-primary'>Loading.....</p>
               ) : 
               (
                 <button type='submit' className='btn-primary'>
