@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar'
 import axiosInstance from '../../utils/axiosInstance'
 import TravelStoryCard from '../../components/TravelStoryCard'
 import { data } from 'react-router-dom'
+import { ToastContainer, toast } from "react-toastify"
 
 const Home = () => {
   const [ allStories, setAllStories] = useState([])
@@ -27,7 +28,26 @@ const Home = () => {
 
   const handleViewStory = (data) => {}
 
-  const updateIsFavorite = async (data) => {}
+  const updateIsFavorite = async (storyData) => {
+    const storyId = storyData._id
+
+    try {
+      const response = await axiosInstance
+        .put(
+            "/travel-story/update-is-favorite/"+storyId, 
+            {
+              isFavorite: !storyData.isFavorite
+            }
+          )
+
+          if(response.data && response.data.story) {
+            toast.success("Story Updated")
+            getAllTravelStories()
+          }
+    } catch (error) {
+      console.log("Please try again.")
+    }
+  }
 
   useEffect(() => {
     getAllTravelStories()
@@ -69,6 +89,8 @@ const Home = () => {
           <div className='w-[320px]'></div>
         </div>
       </div>
+
+      <ToastContainer />
     </>
   )
 }
