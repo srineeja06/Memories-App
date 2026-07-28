@@ -40,7 +40,9 @@ const Home = () => {
   }
 
   //handle edit
-  const handleEdit = async (data) => {}
+  const handleEdit = async (data) => {
+    setOpenAddEditMode({isShown: true, type:"edit", data: data})
+  }
 
   const handleViewStory = (data) => {
     setOpenViewMode({isShown: true, data})
@@ -150,7 +152,10 @@ const Home = () => {
            onClose={() => {
             setOpenViewMode((prevState) => ({...prevState, isShown: false}))
            }}
-           onEditClick={() => {}}
+           onEditClick={() => {
+            setOpenViewMode((prevState) => ({...prevState, isShown:false}))
+            handleEdit(openViewMode.data || null)
+           }} 
            onDeleteClick={()=>{}}
           />
         </Modal>
