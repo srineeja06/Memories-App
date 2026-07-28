@@ -4,11 +4,20 @@ import axiosInstance from '../../utils/axiosInstance'
 import TravelStoryCard from '../../components/TravelStoryCard'
 import { data } from 'react-router-dom'
 import { ToastContainer, toast } from "react-toastify"
+import { RiAddLargeFill } from "react-icons/ri";
+import Modal from "react-modal"
+import AddEditTravelStory from '../../components/AddEditTravelStory'
 
 const Home = () => {
   const [ allStories, setAllStories] = useState([])
 
-  console.log(allStories)
+  //console.log(allStories)
+
+  const [ openAddEditMode,setOpenAddEditMode ] = useState({
+    isShown: false,
+    type: "add",
+    data: null,
+  })
 
   //all stories
   const getAllTravelStories = async () => {
@@ -89,6 +98,38 @@ const Home = () => {
           <div className='w-[320px]'></div>
         </div>
       </div>
+
+      <Modal 
+        isOpen={openAddEditMode.isShown}
+        onRequestClose={() => {}}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+            zIndex: 999
+          },
+        }}
+        appElement={document.getElementById("root")}
+        className="w-[80vw] md:w-[40%] h-[80vh] bg-white rounded-lg mx-auto mt-14 p-5
+        overflow-y-scroll scrollbar z-50"
+      >
+        <AddEditTravelStory 
+          storyInfo={openAddEditMode.data} 
+          type={openAddEditMode.type} 
+          onClose={() => {
+            setOpenAddEditMode({ isShown: false, type: "add", data: null})
+          }}
+          getAllTravelStories={getAllTravelStories}
+        />
+      </Modal>
+
+      <button 
+        className='w-16 h-16 flex items-center justify-center rounded-full bg-[#05b6d3] hover:bg-cyan-400 fixed right-10 bottom-10' 
+        onClick={() => {
+          setOpenAddEditMode({ isShown: true, type: "add", data: null })
+        }}
+      >
+        <RiAddLargeFill className='text-[20px] text-white'/>
+      </button>
 
       <ToastContainer />
     </>

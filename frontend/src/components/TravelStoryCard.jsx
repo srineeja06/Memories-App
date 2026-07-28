@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from "moment"
-import { VscLocation, VscWhitespace } from "react-icons/vsc";
+import { VscLocation } from "react-icons/vsc";
 import { PiHeartStraightFill } from "react-icons/pi";
 
 const TravelStoryCard = ({ 
