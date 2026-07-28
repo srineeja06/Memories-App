@@ -33,12 +33,16 @@ const DateSelector = ({ date, setDate }) => {
             <IoCloseCircleSharp className='text-xl text-blue-900'/>
          </button>
 
-         <DayPicker 
-                captionLayout='dropdown' 
-                mode='single' 
-                selected={date} 
-                pagedNavigation
-           />
+         <DayPicker
+  captionLayout="dropdown"
+  mode="single"
+  selected={date}
+  onSelect={(selectedDate) => {
+    setDate(selectedDate);
+    setOpenDatePicker(false); // optional: close after selecting
+  }}
+  pagedNavigation
+/>
         </div>
         )}
     </div>

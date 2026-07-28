@@ -6,6 +6,10 @@ import { AiOutlineDelete } from "react-icons/ai";
 import DateSelector from './DateSelector';
 import ImageSelector from './ImageSelector';
 import TagInput from './TagInput';
+import axiosInstance from '../utils/axiosInstance';
+import moment from 'moment'
+import { toast } from "react-toastify"
+import uploadImage from '../utils/uploadImage';
 
 
 const AddEditTravelStory = ({ 
@@ -19,8 +23,60 @@ const AddEditTravelStory = ({
     const [storyImg,setStoryImg] = useState(null)
     const [story,setStory] = useState("")
     const [visitedLocation,setVisitedLocation] = useState([])
+    const [error, setError] = useState("")
 
-    const handleAddOrUpdateClick = () => {}
+    const addNewTravelStory = async() =>{
+        try {
+            let imageUrl = ""
+
+            if(storyImg){
+                const imgUploadRes = await uploadImage(storyImg)
+
+                imageUrl = imgUploadRes.imageUrl || ""
+            }
+
+            const response = await axiosInstance.post("/travel-story/add", {
+                title,
+                story,
+                imageUrl: imageUrl || "",
+                visitedLocation,
+                visitedDate: visitedDate 
+                 ? moment(visitedDate.valueOf()) 
+                 : moment().valueOf(),
+            })
+
+            if(response.data && response.data.story){
+                toast.success("Story added")
+                getAllTravelStories()
+
+                onClose()
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const updateTravelStory = async () => {}
+
+    const handleAddOrUpdateClick = () => {
+        if(!title){
+            setError("enter title")
+            return
+        }
+
+        if(!story){
+            setError("enter story")
+            return
+        }
+
+        setError("")
+
+        if(type === "edit"){
+            updateTravelStory()
+        }else{
+            addNewTravelStory()
+        }
+    }
 
     const handleDeleteStoryImage = () => {}
 
@@ -53,6 +109,10 @@ const AddEditTravelStory = ({
                     <IoCloseCircleSharp className='text-xl text-slate-400' /> 
                 </button>
                 </div>
+
+                {error && (
+                    <p className='text-red-500 text-sm pt-2 text-right'>{error}</p>
+                )}
             </div>
         </div>
 
@@ -78,12 +138,11 @@ const AddEditTravelStory = ({
                     <label className="input-label">Story</label>
 
                     <textarea 
-                        type="text" 
                         className='text-sm text-slate-950 outline-none bg-slate-100 p-2 rounded-sm' 
                         placeholder='Your story' 
                         rows={10} 
                         value={story} 
-                        onChange={(e)=>(e.target.value)}
+                        onChange={(e)=>setStory(e.target.value)}
                     />
                 </div>
 
