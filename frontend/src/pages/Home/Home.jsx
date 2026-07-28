@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify"
 import { RiAddLargeFill } from "react-icons/ri";
 import Modal from "react-modal"
 import AddEditTravelStory from '../../components/AddEditTravelStory'
+import ViewEditTravelStory from './ViewEditTravelStory'
 
 const Home = () => {
   const [ allStories, setAllStories] = useState([])
@@ -16,6 +17,12 @@ const Home = () => {
   const [ openAddEditMode,setOpenAddEditMode ] = useState({
     isShown: false,
     type: "add",
+    data: null,
+  })
+
+  const [ openViewMode, setOpenViewMode ] = useState({
+    isShown: false,
+    type: "view",
     data: null,
   })
 
@@ -35,7 +42,9 @@ const Home = () => {
   //handle edit
   const handleEdit = async (data) => {}
 
-  const handleViewStory = (data) => {}
+  const handleViewStory = (data) => {
+    setOpenViewMode({isShown: true, data})
+  }
 
   const updateIsFavorite = async (storyData) => {
     const storyId = storyData._id
@@ -121,6 +130,30 @@ const Home = () => {
           getAllTravelStories={getAllTravelStories}
         />
       </Modal>
+
+      <Modal 
+        isOpen={openViewMode.isShown}
+        onRequestClose={() => {}}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+            zIndex: 999
+          },
+        }}
+        appElement={document.getElementById("root")}
+        className="w-[80vw] md:w-[40%] h-[80vh] bg-white rounded-lg mx-auto mt-14 p-5
+        overflow-y-scroll scrollbar z-50"
+        >
+          <ViewEditTravelStory 
+           type={openViewMode.type}
+           storyInfo={openViewMode.data || null}
+           onClose={() => {
+            setOpenViewMode((prevState) => ({...prevState, isShown: false}))
+           }}
+           onEditClick={() => {}}
+           onDeleteClick={()=>{}}
+          />
+        </Modal>
 
       <button 
         className='w-16 h-16 flex items-center justify-center rounded-full bg-[#05b6d3] hover:bg-cyan-400 fixed right-10 bottom-10' 
