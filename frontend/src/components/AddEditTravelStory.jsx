@@ -63,7 +63,7 @@ const AddEditTravelStory = ({
         try {
             let imageUrl = ''
 
-            const postData = {
+            let postData = {
                 title,
                 story,
                 imageUrl: storyInfo.imageUrl || "",
@@ -129,7 +129,39 @@ const AddEditTravelStory = ({
         }
     }
 
-    const handleDeleteStoryImage = () => {}
+    const handleDeleteStoryImage = () => {
+        const deleteImageResponse = axiosInstance.delete(
+            "/travel-story/delete-image",
+            {
+                params: {
+                    imageUrl: storyInfo.imageUrl,
+                },
+            }
+        )
+
+        if(deleteImageResponse.data) {
+            const storyId = story._id
+
+            const postData = {
+                title,
+                story,
+                visitedLocation,
+                visitedDate : moment().valueOf(),
+                imageUrl:"",
+            }
+
+            const response = axiosInstance.post(
+                "/travel-story/edit-story/" + storyId,
+                postData
+            )
+
+            if(response.data) {
+                toast.success("Image deleted.")
+                setStoryImg(null)
+                getAllTravelStories()
+            }
+        }
+    }
 
   return (
     <div className='relative'>
