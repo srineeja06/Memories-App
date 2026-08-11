@@ -69,6 +69,24 @@ const Home = () => {
     }
   }
 
+  const deleteTravelStory = async(data) => {
+    const storyId = data._id
+
+    try {
+      const response = await axiosInstance.delete("/travel-story/delete-story/" + storyId)
+
+      if(response.data && !response.data.error) {
+        toast.success("Story deleted ")
+
+        setOpenViewMode((prevState) => ({...prevState, isShown: false}))
+
+        getAllTravelStories()
+      }
+    } catch (error) {
+      console.log("Please try again.")
+    }
+  }
+
   useEffect(() => {
     getAllTravelStories()
 
@@ -156,7 +174,9 @@ const Home = () => {
             setOpenViewMode((prevState) => ({...prevState, isShown:false}))
             handleEdit(openViewMode.data || null)
            }} 
-           onDeleteClick={()=>{}}
+           onDeleteClick={()=>{
+            deleteTravelStory(openViewMode.data || null)
+           }}
           />
         </Modal>
 

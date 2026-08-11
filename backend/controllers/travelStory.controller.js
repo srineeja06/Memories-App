@@ -101,68 +101,94 @@ export const deleteImage = async (req, res, next) => {
 }
 
 export const editTravelStory = async (req, res, next) => {
-    const {id} = req.params
-    const{title, story, visitedLocation, imageUrl, visitedDate} = req.body
+    const { id } = req.params
+    const {
+        title,
+        story,
+        visitedLocation,
+        imageUrl,
+        visitedDate
+    } = req.body
+
     const userId = req.user.id
 
-    //validate required fields
-    if (!title || !story || !visitedLocation || !imageUrl || !visitedDate){
-        next(errorHandler(400, "All fields are required"))
+    // Validate required fields
+    if (!title || !story || !visitedLocation || !visitedDate) {
+        return next(errorHandler(400, "All fields are required"))
     }
 
-    //convert visited date from millisec to date object
     const parsedVisitedDate = new Date(parseInt(visitedDate))
 
     try {
-        const travelStory = await TravelStory.findOne({_id: id, userId: userId})
+        const travelStory = await TravelStory.findOne({
+            _id: id,
+            userId: userId
+        })
 
         if (!travelStory) {
-           return next(errorHandler(404, "Travel story not found!!"))
+            return next(errorHandler(404, "Travel story not found!!"))
         }
 
-        const placeholderImageUrl = `http://localhost:3000/assets/placeholderImage.jpeg`
+        const placeholderImageUrl =
+            "http://localhost:3000/assets/placeholderImage.jpeg"
 
         travelStory.title = title
         travelStory.story = story
         travelStory.visitedLocation = visitedLocation
+
         travelStory.imageUrl = imageUrl || placeholderImageUrl
-        travelStory.visistedDate = parsedVisitedDate
+
+        // FIXED TYPO
+        travelStory.visitedDate = parsedVisitedDate
+
         await travelStory.save()
 
         res.status(200).json({
             story: travelStory,
             message: "Updated Travel Story!!",
         })
+
     } catch (error) {
-        return next(error)
+        next(error)
     }
 }
 
 export const deleteTravelStory = async (req, res, next) => {
-    const {id} = req.params
+    const { id } = req.params
     const userId = req.user.id
 
     try {
-        const travelStory = await TravelStory.findOne({_id: id, userId: userId})
-        
+        const travelStory = await TravelStory.findOne({
+            _id: id,
+            userId: userId
+        })
+
         if (!travelStory) {
-           return next(errorHandler(404, "Travel story not found!!"))
+            return next(errorHandler(404, "Travel story not found!!"))
         }
 
-        await travelStory.deleteOne({_id: id, userId: userId})
+        const placeholderImageUrl =
+            "http://localhost:3000/assets/placeholderImage.jpeg"
 
         const imageUrl = travelStory.imageUrl
-        const filename = path.basename(imageUrl)
 
-        const filePath = path.join(rootDir, "uploads", filename)
+        // Delete story from database
+        await travelStory.deleteOne()
 
-        if (!fs.existsSync(filePath)) {
-            return next(errorHandler(404, "Image not found"))
+        // Delete uploaded image from uploads folder
+        if (imageUrl && imageUrl !== placeholderImageUrl) {
+            const filename = path.basename(imageUrl)
+            const filePath = path.join(rootDir, "uploads", filename)
+
+            if (fs.existsSync(filePath)) {
+                await fs.promises.unlink(filePath)
+            }
         }
 
-        await fs.promises.unlink(filePath)
+        res.status(200).json({
+            message: "Travel story deleted!!"
+        })
 
-        res.status(200).json({message: "Travel story deleted!!"})
     } catch (error) {
         next(error)
     }
