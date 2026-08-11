@@ -12,6 +12,7 @@ import EmptyCard from '../../components/EmptyCard'
 import { DayPicker } from "react-day-picker"
 import moment from "moment"
 import FilterInfoTitle from "../../components/FilterInfoTitle"
+import { getEmptyCardMessage } from "../../utils/helper"
 
 const Home = () => {
   const [ allStories, setAllStories] = useState([])
@@ -199,7 +200,7 @@ const Home = () => {
             ) : (
               <EmptyCard 
                 imgSrc={"https://images.pexels.com/photos/15327189/pexels-photo-15327189.jpeg"}
-                message = {`Start Creating....`}
+                message = {getEmptyCardMessage(filterType)}
                 setOpenAddEditMode = {() => setOpenAddEditMode({
                   isShown: true,
                   type: "add",
